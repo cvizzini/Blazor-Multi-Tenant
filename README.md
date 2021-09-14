@@ -1,18 +1,24 @@
 # Blazor WASM Application (with server-side prerendering) .Net 5.0
 
 The default Blazor .net 5 demo project updated to use prerendering.
+
 Uses MySQL server - Configure connection string in the appsettings.config.
+
 Creates tenants with connection strings.
+
 Creates defauld user: Admin P@ssword123.
 
 Navigate to localhost:5001 or pig.localhost:5001 or dog.localhost:5001.
+
 Show Employees tab will show different data depending on the route
 
 ## Pre-Requisites
 
 Install .Net Core 5.0
+
 Update Visual Studio to version 16.8 or greater
-MySqlServer
+
+MySQL Server
 
 ##Code Sources
 
