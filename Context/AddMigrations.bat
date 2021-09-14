@@ -1,0 +1,1 @@
+dotnet ef migrations add %1 -c EmployeeContext -s ..\Server\ExampleApp.Server.csproj

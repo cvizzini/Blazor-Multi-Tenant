@@ -1,0 +1,64 @@
+﻿@page "/register"
+@using ExampleApp.Shared.Models
+@using ExampleApp.Shared
+@using Client.Data
+@inject IAuthenticateUserService AuthenticationService
+@inject IAlertService AlertService
+@inject NavigationManager urlNavigationManager
+
+<h1>Register</h1>
+<hr />
+
+<EditForm Model="@user" OnValidSubmit="RegististerUser">
+    <DataAnnotationsValidator />
+    <div class="form-group row">
+        <label class="control-label col-md-12">Username</label>
+        <div class="col-md-4">
+            <input class="form-control" @bind="user.Username" placeholder="" />
+        </div>
+        <ValidationMessage For="@(() => user.Username)" />
+    </div>
+    <div class="form-group row">
+        <label class="control-label col-md-12">Email</label>
+        <div class="col-md-4">
+            <input class="form-control" @bind="user.Email" type="email" placeholder="" />
+        </div>
+        <ValidationMessage For="@(() => user.Email)" />
+    </div>
+    <div class="form-group row">
+        <label class="control-label col-md-12">Password</label>
+        <div class="col-md-4">
+            <input class="form-control" @bind="user.Password" type="password" />
+        </div>
+        <ValidationMessage For="@(() => user.Password)" />
+    </div>    <div class="form-group">
+        <button type="submit" disabled="@loading" class="btn btn-primary">Submit</button>
+    </div>
+</EditForm>
+
+@code {
+    RegisterModel user = new RegisterModel();
+    private bool loading;
+
+    protected async Task RegististerUser()
+    {       
+        AlertService.Clear();
+
+        loading = true;
+        try
+        {
+            var response = await AuthenticationService.Register(this.user);
+            if (response.Status != "Success")
+            {
+                throw new Exception(response.Message);
+            }
+            urlNavigationManager.NavigateTo("/");
+        }
+        catch (Exception ex)
+        {
+            AlertService.Error(ex.Message);
+            loading = false;
+            StateHasChanged();
+        }
+    }
+}

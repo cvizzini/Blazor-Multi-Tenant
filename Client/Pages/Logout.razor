@@ -1,0 +1,15 @@
+﻿@page "/logout"
+@using ExampleApp.Shared.Models
+@using ExampleApp.Shared
+@inject IAuthenticateUserService AuthenticationService
+@inject NavigationManager NavigationManager
+
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        await AuthenticationService.Logout();
+        NavigationManager.NavigateTo("/");
+    }
+
+}
