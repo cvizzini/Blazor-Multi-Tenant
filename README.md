@@ -40,7 +40,7 @@ cd Server
 dotnet watch run
 ```
 
-Debug Web Assembly
+Debug Web Assembly in Chrome
 ```
 Shift+alt+D
 Follow the instructions
