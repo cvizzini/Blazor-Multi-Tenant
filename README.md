@@ -12,6 +12,7 @@ Show Employees tab will show different data depending on the route
 
 Install .Net Core 5.0
 Update Visual Studio to version 16.8 or greater
+MySqlServer
 
 ##Code Sources
 
