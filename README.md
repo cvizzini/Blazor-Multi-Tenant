@@ -40,6 +40,12 @@ cd Server
 dotnet watch run
 ```
 
+Debug Web Assembly
+```
+Shift+alt+D
+Follow the instructions
+```
+
 If you want changes automatically reflected in the browser...
 
 ## Contributing
