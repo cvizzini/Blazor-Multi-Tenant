@@ -18,6 +18,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace ExampleApp.Server
 {
@@ -34,16 +35,18 @@ namespace ExampleApp.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+           
+
             SetupDatabaseContext(services);
             SetupDatabase(services);
 
             InitialiseAuthenticationAndAuthorisation(services);
 
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped(typeof(Tenant2Attribute));
             services.AddScoped<DefaultDataGenerator>();
             services.AddScoped<IWeatherForecastService, WeatherForecastDataAccessLayer>();
-            services.AddTransient<IEmployee, EmployeeDataAccessLayer>();            
+            services.AddTransient<IEmployee, EmployeeDataAccessLayer>();
             services.AddServerSideBlazor();
             services.AddScoped<IAlertService, AlertService>();
             services.AddControllersWithViews();
@@ -54,7 +57,8 @@ namespace ExampleApp.Server
                     new[] { "application/octet-stream" });
             });
 
-            SetupDefaultData(services);
+            var task = Task.Run(() => SetupDefaultData(services));
+            task.Wait();
         }
 
         private static void SetupDatabase(IServiceCollection services)
@@ -63,28 +67,21 @@ namespace ExampleApp.Server
             {
                 var context = sp.GetService<EmployeeContext>();
                 if (context.Database.GetPendingMigrations().Any())
-                    context.Database.Migrate();              
+                    context.Database.Migrate();
             }
-
-
         }
-        
-        private static void SetupDefaultData(IServiceCollection services)
+
+        private static async Task SetupDefaultData(IServiceCollection services)
         {
             using (var sp = services.BuildServiceProvider())
             {
                 var defaultDataGenerator = sp.GetService<DefaultDataGenerator>();
-                defaultDataGenerator.GenerateData();
+                await defaultDataGenerator.GenerateData();
             }
         }
 
         private void SetupDatabaseContext(IServiceCollection services)
         {
-            var server = Configuration.GetConnectionString("Server");
-            var database = Configuration.GetConnectionString("Database");
-            var user = Configuration.GetConnectionString("User");
-            var password = Configuration.GetConnectionString("Password");
-            //var connectionString = $"server={server};database={database};user={user};password={password}";
             var connectionString = Configuration.GetConnectionString("dbConnection");
             services.AddDbContext<EmployeeContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)), ServiceLifetime.Transient);
         }

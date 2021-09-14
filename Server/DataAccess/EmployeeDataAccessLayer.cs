@@ -11,15 +11,16 @@ namespace ExampleApp.Server.DataAccess
     {
         public EmployeeDataAccessLayer(EmployeeContext employeeContext)
         {
-            db = employeeContext;
+            _employeeContext = employeeContext;
         }
-        private readonly EmployeeContext db;
+        private readonly EmployeeContext _employeeContext;
 
         //To Get all employees details   
         public IEnumerable<Employee> GetAllEmployees()
         {
             try
             {
+                using var db = _employeeContext.Create();
                 return db.Employees.ToList();
             }
             catch
@@ -33,6 +34,7 @@ namespace ExampleApp.Server.DataAccess
         {
             try
             {
+                using var db = _employeeContext.Create();
                 db.Employees.Add(employee);
                 db.SaveChanges();
             }
@@ -47,6 +49,7 @@ namespace ExampleApp.Server.DataAccess
         {
             try
             {
+                using var db = _employeeContext.Create();
                 db.Entry(employee).State = EntityState.Modified;
                 db.SaveChanges();
             }
@@ -61,6 +64,7 @@ namespace ExampleApp.Server.DataAccess
         {
             try
             {
+                using var db = _employeeContext.Create();
                 Employee employee = db.Employees.Find(id);
                 return employee;
             }
@@ -75,6 +79,7 @@ namespace ExampleApp.Server.DataAccess
         {
             try
             {
+                using var db = _employeeContext.Create();
                 Employee emp = db.Employees.Find(id);
                 db.Employees.Remove(emp);
                 db.SaveChanges();

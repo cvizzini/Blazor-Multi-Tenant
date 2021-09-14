@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
 namespace ExampleApp.Shared
@@ -6,4 +7,5 @@ namespace ExampleApp.Shared
     {
         Task<WeatherForecast[]> GetForecastAsync();
     }
+
 }

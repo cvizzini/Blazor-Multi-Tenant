@@ -8,6 +8,8 @@ namespace ExampleApp.Shared.Models
         [Required]
         public string Name { get; set; }
         [Required]
-        public string Host { get; set; }      
+        public string Host { get; set; }
+       
+        public string DatabaseConnection { get; set; }
     }
 }
