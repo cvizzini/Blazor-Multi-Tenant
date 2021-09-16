@@ -31,7 +31,7 @@ namespace ExampleApp.Server.Controllers
         public async Task<IActionResult> GetAllByTenant(int tenantId)
         {
             var result = await _repository.Filter(x => x.TenantId == tenantId, new string[] { "Tenant", "User"});
-            return Ok(result.ToList());
+            return Ok(result.Select(x=> new UserAccessDTO(x)).ToList());
         }
 
 

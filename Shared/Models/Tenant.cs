@@ -100,5 +100,33 @@ namespace ExampleApp.Shared.Models
         public int IsDeleted { get; set; }
     }
 
+    public class UserAccessDTO
+    {
+        public UserAccessDTO()
+        {
 
+        }
+        public int UserTenantAccessId { get; set; }
+
+        public UserAccessDTO(UserTenantAccess userTenantAccess)
+        {
+            UserTenantAccessId = userTenantAccess.Id;
+            UserId = userTenantAccess.UserId;
+            Username = userTenantAccess.User?.UserName;
+            Email = userTenantAccess.User?.Email;
+        }
+
+        public UserAccessDTO(int userTenantAccessId, string userId, string username, string email)
+        {
+            UserTenantAccessId = userTenantAccessId;
+            UserId = userId;
+            Username = username;
+            Email = email;
+        }
+
+        public string UserId { get; set; }
+        public string Username { get; set; }
+        public string Email { get; set; }
+
+    }
 }
