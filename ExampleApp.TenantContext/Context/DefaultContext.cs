@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace ExampleApp.TenantContext.Context
 {
-    public class DefaultContext : IdentityDbContext<ApplicationUser>
+    public class DefaultContext : IdentityDbContext<ApplicationUser> //: IdentityDbContext<IdentityUser<Guid>, IdentityRole<Guid>, Guid>
     {
         private readonly IConfiguration _configuration;
         private readonly DbContextOptions<DefaultContext> _options;
@@ -37,6 +37,14 @@ namespace ExampleApp.TenantContext.Context
             var dbContext = new DefaultContext(_configuration, _options);        
 
             return dbContext;
+        }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+         
+
         }
 
     }

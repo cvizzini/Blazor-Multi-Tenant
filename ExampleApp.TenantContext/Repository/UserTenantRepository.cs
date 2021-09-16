@@ -85,10 +85,14 @@ namespace ExampleApp.TenantContext.Repository
             return entity;
         }
 
-        public async Task<IEnumerable<UserTenantAccess>> Filter(Expression<Func<UserTenantAccess, bool>> predicate)
+        public async Task<IEnumerable<UserTenantAccess>> Filter(Expression<Func<UserTenantAccess, bool>> predicate, string[] includes = null)
         {
             using var dbContext = context.Create();
-            var entities = dbContext.Set<UserTenantAccess>().AsNoTracking(); ;
+            var entities = dbContext.Set<UserTenantAccess>().AsNoTracking();
+            foreach (var include in includes)
+            {
+                entities = entities.Include(include);
+            }
             var result = await entities.Where(predicate).ToListAsync();
             return result;
         }
@@ -96,7 +100,7 @@ namespace ExampleApp.TenantContext.Repository
         public async Task<UserTenantAccess> FindByFilter(Expression<Func<UserTenantAccess, bool>> predicate)
         {
             using var dbContext = context.Create();
-            var entities = dbContext.Set<UserTenantAccess>().AsNoTracking(); ;
+            var entities = dbContext.Set<UserTenantAccess>().AsNoTracking(); 
             var result = await entities.Where(predicate).FirstOrDefaultAsync();
             return result;
         }

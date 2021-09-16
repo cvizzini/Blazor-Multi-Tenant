@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ExampleApp.TenantContext.Migrations
 {
     [DbContext(typeof(DefaultContext))]
-    [Migration("20210916120735_InitialMigrations")]
-    partial class InitialMigrations
+    [Migration("20210916150719_RemoveLink")]
+    partial class RemoveLink
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -120,17 +120,15 @@ namespace ExampleApp.TenantContext.Migrations
                     b.Property<int>("TenantId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId1")
+                    b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("TenantId");
 
-                    b.HasIndex("UserId1");
+                    b.HasIndex("UserId");
 
                     b.ToTable("UserTenantAccess");
                 });
@@ -273,7 +271,9 @@ namespace ExampleApp.TenantContext.Migrations
 
                     b.HasOne("ExampleApp.Shared.Models.ApplicationUser", "User")
                         .WithMany()
-                        .HasForeignKey("UserId1");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Tenant");
 

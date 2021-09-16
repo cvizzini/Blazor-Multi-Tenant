@@ -219,8 +219,7 @@ namespace ExampleApp.TenantContext.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     TenantId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    UserId1 = table.Column<string>(type: "varchar(255)", nullable: true)
+                    UserId = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     IsDeleted = table.Column<int>(type: "int", nullable: false)
                 },
@@ -228,11 +227,11 @@ namespace ExampleApp.TenantContext.Migrations
                 {
                     table.PrimaryKey("PK_UserTenantAccess", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_UserTenantAccess_AspNetUsers_UserId1",
-                        column: x => x.UserId1,
+                        name: "FK_UserTenantAccess_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_UserTenantAccess_Tenants_TenantId",
                         column: x => x.TenantId,
@@ -285,9 +284,9 @@ namespace ExampleApp.TenantContext.Migrations
                 column: "TenantId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserTenantAccess_UserId1",
+                name: "IX_UserTenantAccess_UserId",
                 table: "UserTenantAccess",
-                column: "UserId1");
+                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

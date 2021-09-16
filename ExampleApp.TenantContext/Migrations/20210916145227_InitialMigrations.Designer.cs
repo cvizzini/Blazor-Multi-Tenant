@@ -3,14 +3,16 @@ using System;
 using ExampleApp.TenantContext.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ExampleApp.TenantContext.Migrations
 {
     [DbContext(typeof(DefaultContext))]
-    partial class DefaultContextModelSnapshot : ModelSnapshot
+    [Migration("20210916145227_InitialMigrations")]
+    partial class InitialMigrations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -268,7 +270,7 @@ namespace ExampleApp.TenantContext.Migrations
                         .IsRequired();
 
                     b.HasOne("ExampleApp.Shared.Models.ApplicationUser", "User")
-                        .WithMany()
+                        .WithMany("UserTenantAccess")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -327,6 +329,11 @@ namespace ExampleApp.TenantContext.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("ExampleApp.Shared.Models.ApplicationUser", b =>
+                {
+                    b.Navigation("UserTenantAccess");
                 });
 #pragma warning restore 612, 618
         }

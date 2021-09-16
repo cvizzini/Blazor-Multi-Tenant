@@ -17,7 +17,7 @@ namespace ExampleApp.Shared.Models
         [Required]
         public int TenantId { get; set; }
         [Required]
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public Tenant Tenant { get; set; }
         public ApplicationUser User { get; set; }
 
@@ -99,5 +99,6 @@ namespace ExampleApp.Shared.Models
         public int Id { get; set; }
         public int IsDeleted { get; set; }
     }
+
 
 }

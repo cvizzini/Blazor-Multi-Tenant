@@ -17,7 +17,7 @@ namespace ExampleApp.Context.Context
         private readonly DefaultContext _defaultContext;
         private Tenant _tenant;
 
-        public EmployeeContext(IConfiguration configuration, DbContextOptions<EmployeeContext> options, IHttpContextAccessor accessor, DefaultContext defaultContext, Tenant tenant = null ) : base(options)
+        public EmployeeContext(IConfiguration configuration, DbContextOptions<EmployeeContext> options, IHttpContextAccessor accessor, DefaultContext defaultContext, Tenant tenant = null) : base(options)
         {
             this._configuration = configuration;
             _options = options;
@@ -45,12 +45,12 @@ namespace ExampleApp.Context.Context
             {
                 optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
             }
-        }
+        }      
 
         public EmployeeContext Create()
         {
             var hostValue = _accessor.HttpContext?.Request?.Host.Value.ToLower() ?? "";
-            var  defaultContext = _defaultContext.Create();
+            var defaultContext = _defaultContext.Create();
             var tenant = defaultContext.Tenants?.FirstOrDefault(t => t.Host.ToLower() == hostValue);
             var dbContext = new EmployeeContext(_configuration, _options, _accessor, _defaultContext, tenant);
             if (tenant != null)
@@ -60,6 +60,8 @@ namespace ExampleApp.Context.Context
 
             return dbContext;
         }
+
+
 
     }
 }

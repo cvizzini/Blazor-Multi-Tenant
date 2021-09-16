@@ -47,11 +47,11 @@ namespace ExampleApp.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] Tenant announcement)
+        public async Task<IActionResult> Create([FromBody] Tenant tenant)
         {
             if (ModelState.IsValid)
             {
-                var result = await _repository.Insert(announcement);
+                var result = await _repository.Insert(tenant);
                 return Ok(result);
             }
 
@@ -69,11 +69,11 @@ namespace ExampleApp.Server.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Edit([FromBody] Tenant announcement)
+        public async Task<IActionResult> Edit([FromBody] Tenant tenant)
         {
             if (ModelState.IsValid)
             {
-                var result = await _repository.Update(announcement);
+                var result = await _repository.Update(tenant);
                 return Ok(result);
             }
 

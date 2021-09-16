@@ -82,7 +82,7 @@ namespace ExampleApp.Server
             });
 
             var task = Task.Run(() => SetupDefaultData(services));
-            task.Wait();           
+            task.Wait();
 
         }
 

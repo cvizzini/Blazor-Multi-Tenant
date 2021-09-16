@@ -22,9 +22,10 @@ namespace ExampleApp.Server.DataAccess
         }
 
         public async Task GenerateData()
-        {            
+        {
             await GenerateDefaultUser();
             await GenerateTenants();
+            await GenerateTestUser();
         }
 
         private async Task GenerateDefaultUser()
@@ -58,6 +59,33 @@ namespace ExampleApp.Server.DataAccess
                     await dbContext.SaveChangesAsync();
                 }
             }
+        }
+
+        private async Task GenerateTestUser()
+        {
+            var user = new ApplicationUser()
+            {
+                Email = "test@email.com",
+                SecurityStamp = Guid.NewGuid().ToString(),
+                UserName = "Test"
+            };
+
+            var existingUser = await _userManager.FindByNameAsync(user.UserName);
+            if (existingUser == null)
+            {
+                await _userManager.CreateAsync(user, "P@ssword123");
+                existingUser = await _userManager.FindByNameAsync(user.UserName);
+            }
+
+            using var dbContext = _context.Create();
+
+            var existing = await dbContext.UserTenantAccess.FirstOrDefaultAsync(x => x.TenantId == 1 && x.UserId == existingUser.Id);
+            if (existing == null)
+            {
+                dbContext.UserTenantAccess.Add(new UserTenantAccess() { TenantId = 1, UserId = existingUser.Id });
+                await dbContext.SaveChangesAsync();
+            }
+
         }
     }
 }
