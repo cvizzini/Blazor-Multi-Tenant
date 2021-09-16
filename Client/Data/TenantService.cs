@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System.Collections.Generic;
+using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using ExampleApp.Shared;
@@ -6,12 +7,12 @@ using ExampleApp.Shared.Models;
 
 namespace ExampleApp.Client.Data
 {
-    public class Tenant2Service : ITenant2Service
+    public class TenantService : ITenantService
     {
         private readonly HttpClient _httpClient;
-        private const string Tenant_ROUTE = "/api/Tenant/";
+        private const string Tenant_ROUTE = "/api/Tenant";
 
-        public Tenant2Service(HttpClient httpClient)
+        public TenantService(HttpClient httpClient)
         {
             _httpClient = httpClient;
         }
@@ -26,20 +27,14 @@ namespace ExampleApp.Client.Data
             await _httpClient.DeleteAsync($"{Tenant_ROUTE}/{id}");
         }
 
-        private async Task<Tenant[]> GetAllTenants(string s)
+        public async Task<List<Tenant>> GetAllTenants()
         {
-            return await _httpClient.GetFromJsonAsync<Tenant[]>($"{Tenant_ROUTE}");
-        }
-
-        public async Task<string> GetAllTenants()
-        {
-            return await _httpClient.GetFromJsonAsync<string>($"{Tenant_ROUTE}");
-        }
-
+            return await _httpClient.GetFromJsonAsync<List<Tenant>>($"{Tenant_ROUTE}");
+        }             
 
         public async Task<Tenant> GetTenantData(int id)
         {
-            var TenantResponse = await _httpClient.GetAsync($"{Tenant_ROUTE}/{id}");
+            var TenantResponse = await _httpClient.GetAsync($"{Tenant_ROUTE}/{id}");           
             var Tenant = await TenantResponse.Content.ReadFromJsonAsync<Tenant>();
             return Tenant;
         }

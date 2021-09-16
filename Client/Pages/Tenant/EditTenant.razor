@@ -1,0 +1,58 @@
+﻿@page "/edittenant/{objID:int}"
+@using ExampleApp.Shared.Models
+@using ExampleApp.Shared
+@inject ITenantService TenantService
+@inject NavigationManager urlNavigationManager
+
+<h2>Edit Tenant</h2>
+<hr />
+
+<EditForm Model="@obj" OnValidSubmit="UpdateTenant">
+    <DataAnnotationsValidator />
+    <div class="form-group row">
+        <label class="control-label col-md-12">Name</label>
+        <div class="col-md-4">
+            <input class="form-control" @bind="obj.Name" />
+        </div>
+        <ValidationMessage For="@(() => obj.Name)" />
+    </div>   
+    <div class="form-group row">
+        <label class="control-label col-md-12">Host</label>
+        <div class="col-md-4">
+            <input class="form-control" @bind="obj.Host" />
+        </div>
+        <span><ValidationMessage For="@(() => obj.Host)" /></span>
+    </div>
+    <div class="form-group row">
+        <label class="control-label col-md-12">DatabaseConnection</label>
+        <div class="col-md-4">
+            <input class="form-control" @bind="obj.DatabaseConnection" />
+        </div>
+        <span><ValidationMessage For="@(() => obj.DatabaseConnection)" /></span>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button class="btn btn-light" @onclick="Cancel">Cancel</button>
+    </div>
+</EditForm>
+
+@code { [Parameter]
+    public int objID { get; set; }
+
+    Tenant obj = new Tenant();
+
+    protected override async Task OnInitializedAsync()
+    {
+        obj = await TenantService.GetTenantData(objID);
+    }
+
+    protected async Task UpdateTenant()
+    {
+        await TenantService.UpdateTenant(obj);
+        urlNavigationManager.NavigateTo("/fetchtenant");
+    }
+
+    void Cancel()
+    {
+        urlNavigationManager.NavigateTo("/fetchtenant");
+    } }

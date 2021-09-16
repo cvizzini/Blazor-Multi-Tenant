@@ -1,5 +1,6 @@
 ﻿using ExampleApp.Context.Context;
 using ExampleApp.Shared.Models;
+using ExampleApp.TenantContext.Context;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -11,10 +12,10 @@ namespace ExampleApp.Server.DataAccess
 {
     public class DefaultDataGenerator
     {
-        private readonly EmployeeContext _context;
+        private readonly DefaultContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public DefaultDataGenerator(EmployeeContext context, UserManager<ApplicationUser> userManager)
+        public DefaultDataGenerator(DefaultContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
@@ -44,13 +45,13 @@ namespace ExampleApp.Server.DataAccess
         {
             var tenants = new List<Tenant>()
             {
-                new Tenant() { Host = "Pig.localhost", Name = "Pig", TenantId = 1 , DatabaseConnection = "Server=localhost;Database=evet.Pig;UID=TestUser;Password=HRG_wzm!twt3gqv2jtq"},
-                new Tenant() { Host = "Dog.localhost", Name = "Dog", TenantId = 2 , DatabaseConnection = "Server=localhost;Database=evet.Dog;UID=TestUser;Password=HRG_wzm!twt3gqv2jtq" },
+                new Tenant() { Host = "Pig.localhost", Name = "Pig", Id = 1 , DatabaseConnection = "Server=localhost;Database=evet.Pig;UID=TestUser;Password=HRG_wzm!twt3gqv2jtq"},
+                new Tenant() { Host = "Dog.localhost", Name = "Dog", Id = 2 , DatabaseConnection = "Server=localhost;Database=evet.Dog;UID=TestUser;Password=HRG_wzm!twt3gqv2jtq" },
             };
             using var dbContext = _context.Create();
             foreach (var tenant in tenants)
             {
-                var existing = await dbContext.Tenants.FirstOrDefaultAsync(x => x.TenantId == tenant.TenantId);
+                var existing = await dbContext.Tenants.FirstOrDefaultAsync(x => x.Id == tenant.Id);
                 if (existing == null)
                 {
                     dbContext.Tenants.Add(tenant);

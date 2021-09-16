@@ -1,4 +1,5 @@
 ﻿using ExampleApp.Shared.Models;
+using ExampleApp.TenantContext.Context;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -8,24 +9,29 @@ using System.Linq;
 
 namespace ExampleApp.Context.Context
 {
-    public class EmployeeContext : IdentityDbContext<ApplicationUser>
+    public class EmployeeContext : DbContext
     {
         private readonly IConfiguration _configuration;
         private readonly DbContextOptions<EmployeeContext> _options;
         private readonly IHttpContextAccessor _accessor;
+        private readonly DefaultContext _defaultContext;
         private Tenant _tenant;
 
-        public EmployeeContext(IConfiguration configuration, DbContextOptions<EmployeeContext> options, IHttpContextAccessor accessor, Tenant tenant = null) : base(options)
+        public EmployeeContext(IConfiguration configuration, DbContextOptions<EmployeeContext> options, IHttpContextAccessor accessor, DefaultContext defaultContext, Tenant tenant = null ) : base(options)
         {
             this._configuration = configuration;
             _options = options;
             _accessor = accessor;
+            _defaultContext = defaultContext;
             _tenant = tenant;
         }
 
-
         public virtual DbSet<Employee> Employees { get; set; }
-        public virtual DbSet<Tenant> Tenants { get; set; }
+        public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<Announcement> Announcements { get; set; }
+        public virtual DbSet<BankDetail> BankDetails { get; set; }
+        public virtual DbSet<JobDetail> JobDetails { get; set; }
+        public virtual DbSet<LeaveRequest> LeaveRequests { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -44,9 +50,9 @@ namespace ExampleApp.Context.Context
         public EmployeeContext Create()
         {
             var hostValue = _accessor.HttpContext?.Request?.Host.Value.ToLower() ?? "";
-            var tenant = Tenants?.FirstOrDefault(t => t.Host.ToLower() == hostValue);
-            var dbContext = new EmployeeContext(_configuration, _options, _accessor, tenant);
-
+            var  defaultContext = _defaultContext.Create();
+            var tenant = defaultContext.Tenants?.FirstOrDefault(t => t.Host.ToLower() == hostValue);
+            var dbContext = new EmployeeContext(_configuration, _options, _accessor, _defaultContext, tenant);
             if (tenant != null)
             {
                 dbContext.Database.Migrate();

@@ -1,0 +1,53 @@
+﻿@page "/fetchtenant"
+@attribute [Authorize]
+@using ExampleApp.Shared.Models
+@using ExampleApp.Shared
+@inject ITenantService TenantService
+@inject NavigationManager urlNavigationManager
+
+
+<h1>Tenant Data</h1>
+
+<p>This component demonstrates fetching Tenant data from the server.</p>
+
+<p>
+    <a href="/addtenant">Create New</a>
+</p>
+
+@if (empList == null)
+{
+<p><em>Loading...</em></p> }
+else
+{
+<table class='table'>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Host</th>
+            <th>DatabaseConnection</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var emp in empList)
+        {
+        <tr>
+            <td>@emp.Id</td>
+            <td>@emp.Name</td>
+            <td>@emp.Host</td>
+            <td>@emp.DatabaseConnection</td>           
+            <td>
+                <a href='/edittenant/@emp.Id'>Edit</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>}
+@code { List<Tenant> empList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        empList = await TenantService.GetAllTenants();
+    }
+
+    }

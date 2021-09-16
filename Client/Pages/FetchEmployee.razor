@@ -33,14 +33,14 @@ else
         @foreach (var emp in empList)
         {
         <tr>
-            <td>@emp.EmployeeId</td>
+            <td>@emp.Id</td>
             <td>@emp.Name</td>
             <td>@emp.Gender</td>
             <td>@emp.Department</td>
             <td>@emp.City</td>
             <td>
-                <a href='/editemployee/@emp.EmployeeId'>Edit</a>  |
-                <a href='/delete/@emp.EmployeeId'>Delete</a>
+                <a href='/editemployee/@emp.Id'>Edit</a>  |
+                <a href='/delete/@emp.Id'>Delete</a>
             </td>
         </tr>
 }

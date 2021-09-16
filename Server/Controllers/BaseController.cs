@@ -9,18 +9,16 @@ using System.Threading.Tasks;
 
 namespace ExampleApp.Server.Controllers
 {
-    [Route("api/[controller]")]
-    public class EmployeeController : Controller
+    public abstract class BaseController<TEntity> : ControllerBase where TEntity : BaseModel
     {
-        private readonly IRepository<Employee> _repository;
+        private readonly IRepository<TEntity> _repository;
 
-        public EmployeeController(IRepository<Employee> repository)
+        public BaseController(IRepository<TEntity> repository)
         {
-            this._repository = repository;
+            _repository = repository;
         }
 
         [HttpGet]
-        [Route("Index")]
         public async Task<IActionResult> Index()
         {
             var result = await _repository.GetAll();
@@ -28,12 +26,11 @@ namespace ExampleApp.Server.Controllers
         }
 
         [HttpPost]
-        [Route("Create")]
-        public async Task<IActionResult> Create([FromBody] Employee employee)
+        public async Task<IActionResult> Create([FromBody] TEntity announcement)
         {
             if (ModelState.IsValid)
             {
-                var result = await _repository.Insert(employee);
+                var result = await _repository.Insert(announcement);
                 return Ok(result);
             }
 
@@ -41,7 +38,7 @@ namespace ExampleApp.Server.Controllers
         }
 
         [HttpGet]
-        [Route("Details/{id}")]
+        [Route("{id}")]
         public async Task<IActionResult> Details(int id)
         {
             var result = await _repository.GetById(id);
@@ -49,12 +46,11 @@ namespace ExampleApp.Server.Controllers
         }
 
         [HttpPut]
-        [Route("Edit")]
-        public async Task<IActionResult> Edit([FromBody] Employee employee)
+        public async Task<IActionResult> Edit([FromBody] TEntity announcement)
         {
             if (ModelState.IsValid)
             {
-                var result = await _repository.Update(employee);
+                var result = await _repository.Update(announcement);
                 return Ok(result);
             }
 
@@ -62,7 +58,7 @@ namespace ExampleApp.Server.Controllers
         }
 
         [HttpDelete]
-        [Route("Delete/{id}")]
+        [Route("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             await _repository.Delete(id);

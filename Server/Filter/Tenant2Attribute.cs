@@ -1,6 +1,7 @@
 ﻿using ExampleApp.Context.Context;
 using ExampleApp.Server.Helpers;
 using ExampleApp.Shared.Models;
+using ExampleApp.TenantContext.Context;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -13,10 +14,10 @@ namespace ExampleApp.Server.Filter
     public class Tenant2Attribute : ActionFilterAttribute
     {
 
-        private readonly EmployeeContext _employeeContext;
+        private readonly DefaultContext _employeeContext;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public Tenant2Attribute(EmployeeContext employeeContext, UserManager<ApplicationUser> userManager)
+        public Tenant2Attribute(DefaultContext employeeContext, UserManager<ApplicationUser> userManager)
         {
             _employeeContext = employeeContext;
             _userManager = userManager;
@@ -32,7 +33,8 @@ namespace ExampleApp.Server.Filter
             var fullAddress = actionExecutingContext.HttpContext?.Request?.Headers?["Host"].ToString()?.Split('.');
             if (fullAddress.Length < 2)
             {
-                actionExecutingContext.Result = new StatusCodeResult(404); base.OnActionExecuting(actionExecutingContext);
+                actionExecutingContext.Result = new StatusCodeResult(404); 
+                base.OnActionExecuting(actionExecutingContext);
             }
             else
             {
@@ -46,7 +48,8 @@ namespace ExampleApp.Server.Filter
                 }
                 else
                 {
-                    actionExecutingContext.Result = new StatusCodeResult(404); base.OnActionExecuting(actionExecutingContext);
+                    actionExecutingContext.Result = new StatusCodeResult(404); 
+                    base.OnActionExecuting(actionExecutingContext);
                 }
             }
         }

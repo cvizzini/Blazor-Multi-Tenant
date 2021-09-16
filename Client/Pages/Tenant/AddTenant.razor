@@ -1,0 +1,52 @@
+﻿@page "/addtenant"
+@using ExampleApp.Shared.Models
+@using ExampleApp.Shared
+@inject ITenantService TenantService
+@inject NavigationManager urlNavigationManager
+
+<h1>Create Employee</h1>
+<hr />
+
+<EditForm Model="@obj" OnValidSubmit="CreateTenant">
+    <DataAnnotationsValidator />
+    <div class="form-group row">
+        <label class="control-label col-md-12">Name</label>
+        <div class="col-md-4">
+            <input class="form-control" @bind="obj.Name" />
+        </div>
+        <ValidationMessage For="@(() => obj.Name)" />
+    </div>   
+    <div class="form-group row">
+        <label class="control-label col-md-12">Host</label>
+        <div class="col-md-4">
+            <input class="form-control" @bind="obj.Host" />
+        </div>
+        <ValidationMessage For="@(() => obj.Host)" />
+    </div>
+    <div class="form-group row">
+        <label class="control-label col-md-12">DatabaseConnection</label>
+        <div class="col-md-4">
+            <input class="form-control" @bind="obj.DatabaseConnection" />
+        </div>
+        <ValidationMessage For="@(() => obj.DatabaseConnection)" />
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button class="btn btn-light" @onclick="Cancel">Cancel</button>
+    </div>
+</EditForm>
+
+@code { 
+    Tenant obj = new Tenant();
+
+    protected async Task CreateTenant()
+    {
+        await TenantService.AddTenant(obj);
+        urlNavigationManager.NavigateTo("/fetchtenant");
+    }
+
+    void Cancel()
+    {
+        urlNavigationManager.NavigateTo("/fetchtenant");
+    }
+    }

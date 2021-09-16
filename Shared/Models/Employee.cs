@@ -2,9 +2,8 @@
 
 namespace ExampleApp.Shared.Models
 {
-    public class Employee
-    {
-        public int EmployeeId { get; set; }
+    public class Employee : BaseModel
+    {      
         [Required]
         public string Name { get; set; }
         [Required]
