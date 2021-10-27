@@ -111,6 +111,7 @@ namespace ExampleApp.Client.Data
                 _navigationManager.NavigateTo("login");
                 return;
             }
+           
 
             await HandleErrors(response);
         }

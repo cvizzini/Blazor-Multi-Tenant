@@ -26,6 +26,7 @@ namespace ExampleApp.Client
             builder.Services.AddScoped<IWeatherForecastService, WeatherForecastService>();
             builder.Services.AddScoped<IUserTenantAccessService, UserTenantAccessService>();
             builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+            builder.Services.AddScoped<IAnnouncementService, AnnouncementService>();
             builder.Services.AddScoped<ITenantService, TenantService>();
             builder.Services.AddScoped<IHttpService, HttpService>();
             builder.Services.AddBlazoredLocalStorage();

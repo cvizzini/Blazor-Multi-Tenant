@@ -50,11 +50,7 @@ namespace ExampleApp.TenantContext.Repository
 
         public async Task<Tenant> Update(Tenant entity)
         {
-            using var dbContext = context.Create();
-            var entities = dbContext.Set<Tenant>();
-            if (entity == null) throw new ArgumentNullException("entity");
-            await dbContext.SaveChangesAsync();
-            return entity;
+            return await Save(entity);
         }
         public async Task Delete(int id)
         {

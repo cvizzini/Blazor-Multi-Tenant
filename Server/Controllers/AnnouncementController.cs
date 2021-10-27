@@ -1,4 +1,5 @@
 ﻿using ExampleApp.Context.Repository;
+using ExampleApp.Server.Filter;
 using ExampleApp.Shared.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ExampleApp.Server.Controllers
 {
     [Authorize]
+   [ServiceFilter(typeof(Tenant2Attribute))]
     [ApiController]
     [Route("api/[controller]")]
     public class AnnouncementController : BaseController<Announcement>

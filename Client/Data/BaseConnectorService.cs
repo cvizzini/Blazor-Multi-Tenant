@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using ExampleApp.Shared;
 using ExampleApp.Shared.Models;
 
 namespace ExampleApp.Client.Data
 {
-    public abstract class BaseConnectorService<T> where T : BaseModel
-    { 
-        private readonly IHttpService _httpClient;   
+    public abstract class BaseConnectorService<T> : IBaseConnectorService<T> where T : BaseModel
+    {
+        private readonly IHttpService _httpClient;
 
         public abstract string BASE_URL { get; }
 

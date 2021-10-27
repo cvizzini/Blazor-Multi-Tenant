@@ -21,6 +21,11 @@ namespace ExampleApp.Client.Data
         {
             await _httpClient.Post($"{USER_TENANT_ACCESS_ROUTE}", userTenantAccess);
         }
+          
+        public async Task AddUserToTenant(int tenantId, string userId)
+        {
+            await _httpClient.Post($"{USER_TENANT_ACCESS_ROUTE}/tenant/{tenantId}/user/{userId}", null);
+        }
 
         public async Task Delete(int id)
         {
@@ -41,6 +46,12 @@ namespace ExampleApp.Client.Data
         public async Task<List<UserAccessDTO>> GetUsersByTenantId(int tenantId)
         {
             var tenant = await _httpClient.Get<List<UserAccessDTO>>($"{USER_TENANT_ACCESS_ROUTE}/tenant/{tenantId}");
+            return tenant;
+        } 
+        
+        public async Task<List<ApplicationUserDTO>> GetUsersExcludeTenant(int tenantId)
+        {
+            var tenant = await _httpClient.Get<List<ApplicationUserDTO>>($"{USER_TENANT_ACCESS_ROUTE}/excludeTenant/{tenantId}");
             return tenant;
         }
 

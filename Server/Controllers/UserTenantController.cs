@@ -34,6 +34,27 @@ namespace ExampleApp.Server.Controllers
             return Ok(result.Select(x=> new UserAccessDTO(x)).ToList());
         }
 
+        [HttpGet]
+        [Route("excludeTenant/{tenantId}")]
+        public async Task<IActionResult> GetAllByExcludeTenant(int tenantId)
+        {
+            var result = await _repository.ExcludeTenant(tenantId);
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("tenant/{tenantId}/user/{userId}")]
+        public async Task<IActionResult> AddUserToTenant(int tenantId, string userId)
+        {
+            var existing = await _repository.Filter(x => x.TenantId == tenantId && x.UserId == userId);
+            if (!existing.Any())
+            {
+                var uta = new UserTenantAccess() { UserId = userId, TenantId = tenantId };
+                var result = await _repository.Insert(uta);
+                return Ok(result);
+            }
+            return Ok(existing);
+        }
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] UserTenantAccess userTenantAccess)

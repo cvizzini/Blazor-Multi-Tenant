@@ -1,0 +1,70 @@
+﻿@page "/addusertotenant/{objID:int}"
+@using ExampleApp.Shared.Models
+@using ExampleApp.Shared
+@using Client.Data
+@inject IAlertService AlertService
+@inject ITenantService TenantService
+@inject IUserTenantAccessService UserTenantAccessService
+@inject NavigationManager urlNavigationManager
+
+<h2>Add User To Tenant</h2>
+<br />
+
+<EditForm Model="@obj" OnValidSubmit="AddUserToTenantAction">
+    <DataAnnotationsValidator />
+    <div class="form-group row">
+        <label class="control-label col-md-12">Name</label>
+        <div class="col-md-4">
+            <input class="form-control" @bind="obj.Name" />
+        </div>
+        <ValidationMessage For="@(() => obj.Name)" />
+    </div>
+    <div class="form-group row">
+        <label class="control-label col-md-12">Host</label>
+        <div class="col-md-4">
+            <input class="form-control" @bind="obj.Host" />
+        </div>
+        <span><ValidationMessage For="@(() => obj.Host)" /></span>
+    </div>
+    <div class="form-group row">
+        <label for="usersList">User Select</label>
+        <select class="form-control" id="usersList" @bind="@userID">
+            @foreach (var uta in users)
+            {
+<option value="@uta.UserId">@uta.Username </option>}
+        </select>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button class="btn btn-light" @onclick="Cancel">Cancel</button>
+    </div>
+</EditForm>
+
+@code { [Parameter]
+    public int objID { get; set; }
+    public string userID { get; set; }
+    List<ApplicationUserDTO> users = new List<ApplicationUserDTO>();
+
+    Tenant obj = new Tenant();
+
+    protected override async Task OnInitializedAsync()
+    {
+        obj = await TenantService.GetTenantData(objID);
+        users = await UserTenantAccessService.GetUsersExcludeTenant(objID);
+    }
+
+    protected async Task AddUserToTenantAction()
+    {
+        if (userID.Length == 0)
+        {
+            AlertService.Error("User not selected!");
+            return;
+        }
+        await UserTenantAccessService.AddUserToTenant(objID, userID);
+        urlNavigationManager.NavigateTo($"/viewtenant/{objID}");
+    }
+
+    void Cancel()
+    {
+        urlNavigationManager.NavigateTo("/fetchemployee");
+    } }

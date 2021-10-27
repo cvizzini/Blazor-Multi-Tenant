@@ -14,12 +14,12 @@ namespace ExampleApp.Server.Filter
     public class Tenant2Attribute : ActionFilterAttribute
     {
 
-        private readonly DefaultContext _employeeContext;
+        private readonly DefaultContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public Tenant2Attribute(DefaultContext employeeContext, UserManager<ApplicationUser> userManager)
+        public Tenant2Attribute(DefaultContext context, UserManager<ApplicationUser> userManager)
         {
-            _employeeContext = employeeContext;
+            _context = context;
             _userManager = userManager;
         }
 
@@ -30,17 +30,18 @@ namespace ExampleApp.Server.Filter
             var userName = User.GetLoggedInUserName();
             var userEmail = User.GetLoggedInUserEmail();
 
-            var fullAddress = actionExecutingContext.HttpContext?.Request?.Headers?["Host"].ToString()?.Split('.');
-            if (fullAddress.Length < 2)
+           
+            var fullAddress = actionExecutingContext.HttpContext?.Request?.Headers?["Host"].ToString();
+          
+            if (fullAddress.Split('.').Length < 2)
             {
-                actionExecutingContext.Result = new StatusCodeResult(404); 
+                actionExecutingContext.Result = new StatusCodeResult(401); 
                 base.OnActionExecuting(actionExecutingContext);
             }
             else
-            {
-                var subdomain = fullAddress[0];
-                var dbcontext = _employeeContext.Create();
-                var tenant = dbcontext.Tenants.FirstOrDefault(t => t.Host.ToLower() == subdomain.ToLower());
+            {            
+                var dbcontext = _context.Create();
+                var tenant = dbcontext.Tenants.FirstOrDefault(t => t.Host.ToLower() == fullAddress.ToLower());
                 if (tenant != null)
                 {
                     actionExecutingContext.RouteData.Values.Add("tenant", tenant);
@@ -48,7 +49,7 @@ namespace ExampleApp.Server.Filter
                 }
                 else
                 {
-                    actionExecutingContext.Result = new StatusCodeResult(404); 
+                    actionExecutingContext.Result = new StatusCodeResult(401); 
                     base.OnActionExecuting(actionExecutingContext);
                 }
             }

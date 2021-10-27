@@ -89,7 +89,7 @@ namespace ExampleApp.TenantContext.Repository
         {
             using var dbContext = context.Create();
             var entities = dbContext.Set<UserTenantAccess>().AsNoTracking();
-            foreach (var include in includes)
+            foreach (var include in (includes ?? Array.Empty<string>()) )
             {
                 entities = entities.Include(include);
             }
@@ -100,9 +100,17 @@ namespace ExampleApp.TenantContext.Repository
         public async Task<UserTenantAccess> FindByFilter(Expression<Func<UserTenantAccess, bool>> predicate)
         {
             using var dbContext = context.Create();
-            var entities = dbContext.Set<UserTenantAccess>().AsNoTracking(); 
+            var entities = dbContext.Set<UserTenantAccess>().AsNoTracking();
             var result = await entities.Where(predicate).FirstOrDefaultAsync();
             return result;
+        }
+
+        public async Task<IEnumerable<ApplicationUserDTO>> ExcludeTenant(int tenantId)
+        {
+            using var dbContext = context.Create();
+            var uts = await dbContext.Set<UserTenantAccess>().AsNoTracking().Where(x => x.TenantId == tenantId).Select(x => x.UserId).ToArrayAsync();
+            var users = await dbContext.Set<ApplicationUser>().AsNoTracking().Where(x=> !uts.Contains(x.Id)).Select(x=> new ApplicationUserDTO(x)).ToListAsync();         
+            return users;
         }
     }
 

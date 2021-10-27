@@ -1,0 +1,45 @@
+﻿@page "/fetchannouncement"
+@attribute [Authorize]
+@using ExampleApp.Shared.Models
+@using ExampleApp.Shared
+@inject IAnnouncementService AnnouncementService
+@inject NavigationManager urlNavigationManager
+
+
+<h1>Announcements</h1>
+
+<p>This component demonstrates fetching Announcements from the server.</p>
+
+<p>
+    <a href="/addannouncement">Create New</a>
+</p>
+
+@if (empList == null)
+{
+<p><em>Loading...</em></p> }
+else
+{
+<table class='table'>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Message</th>          
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var emp in empList)
+        {
+        <tr>
+            <td>@emp.Id</td>
+            <td>@emp.Message</td>
+        </tr>
+}
+    </tbody>
+</table>}
+@code { List<Announcement> empList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        empList = await AnnouncementService.GetAll();
+    }
+}

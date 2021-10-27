@@ -9,6 +9,7 @@ namespace ExampleApp.Shared
     public interface IUserTenantRepository
     {
         Task Delete(int id);
+        Task<IEnumerable<ApplicationUserDTO>> ExcludeTenant(int tenantId);
         Task<IEnumerable<UserTenantAccess>> Filter(Expression<Func<UserTenantAccess, bool>> predicate, string[] includes = null);
         Task<UserTenantAccess> FindByFilter(Expression<Func<UserTenantAccess, bool>> predicate);
         Task<IEnumerable<UserTenantAccess>> GetAll();
